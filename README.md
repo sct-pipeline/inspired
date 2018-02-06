@@ -4,6 +4,7 @@ Spinal cord analysis scripts based on SCT
 
 ## File structure
 
+~~~
 data
   |- 001
   |- 002
@@ -20,6 +21,7 @@ data
             	  |- t2  # processing of t2_tra 
             	  |- t2s  # processing of pd_medic
             	  |- dwi  # processing of dwi
+~~~
 
 ## Getting started
 
