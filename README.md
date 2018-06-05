@@ -1,6 +1,6 @@
-# inspiredsct
+# INSPIRED
 
-Spinal cord analysis scripts based on SCT
+Spinal cord analysis scripts based on SCT for the INSPIRED project.
 
 ## File structure
 
