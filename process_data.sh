@@ -11,10 +11,8 @@
 cd t2
 # segment cord
 sct_deepseg_sc -i t2.nii.gz -c t2
-# QC
-# Adjust segmentation if necessary. Save new segmentation as: t2_seg_manual.nii.gz
-fslview t2.nii.gz -l Greyscale t2_seg.nii.gz -l Red -t 0.7 &
-cd -
+# QC: Adjust segmentation if necessary. Save new segmentation as: t2_seg_manual.nii.gz
+cd ..
 
 # t2s
 # ===========================================================================================
@@ -30,15 +28,12 @@ sct_fmri_moco -i t2s_all.nii.gz -g 1 -m mask_t2s.nii.gz -x spline
 # average all motion-corrected volumes
 sct_maths -i t2s_all.nii.gz -mean t -o t2s_all_mean.nii.gz
 # segment spinal cord
-sct_deepseg_sc -i t2s_all_moco_mean.nii.gz -c t2s
+sct_deepseg_sc -i t2s_all_moco_mean.nii.gz -c t2s -qc ~/qc
+# QC: Adjust cord segmentation if necessary. Save new segmentation as: t2s_all_moco_mean_seg_manual.nii.gz
 # segment spinal cord gray matter
-sct_deepseg_gm -i t2s_all_moco_mean.nii.gz 
-# QC
-# Adjust cord segmentation if necessary. Save new segmentation as: t2s_all_moco_mean_seg_manual.nii.gz
-fslview t2s_all_moco_mean.nii.gz -l Greyscale -t 1 -b 0,300 t2s_all_moco_mean_seg.nii.gz -l Red -t 0.7 &
-# Adjust GM segmentation if necessary. Save new segmentation as: t2s_all_moco_mean_gmseg_manual.nii.gz
-fslview t2s_all_moco_mean.nii.gz -l Greyscale -t 1 -b 0,300 t2s_all_moco_mean_gmseg.nii.gz -l Red -t 0.7 &
-cd -
+sct_deepseg_gm -i t2s_all_moco_mean.nii.gz -qc ~/qc
+# QC: Adjust GM segmentation if necessary. Save new segmentation as: t2s_all_moco_mean_gmseg_manual.nii.gz
+cd ..
 
 # dwi
 # ===========================================================================================
