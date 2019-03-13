@@ -18,23 +18,35 @@ data
       	      |- t2_tra.nii.gz
       	      |- pd_medic.nii.gz
       	      |- processing_sct/
-      	          |- t2/  # processing of t2_tra 
+      	          |- t2/  # processing of t2_tra
       	          |- t2s/  # processing of pd_medic
       	          |- dwi/  # processing of dwi
 ~~~
 
-## Getting started
+## Dependencies
 
-- Edit parameters.sh according to your needs.
-- Prepare data:
-  ./run_process.sh prepare_data.sh
-- Process data:
-  ./run_process.sh process_data.sh
-- Compute metrics:
-  ./run_process.sh compute_metrics.sh
+This pipeline has been tested on [SCT v4.0.0_beta.1](https://github.com/neuropoly/spinalcordtoolbox/releases)
 
+## How to run
 
-## SCT version
+- Download (or `git clone`) this repository.
+- Go to this repository: `cd inspired`
+- Copy the file `parameters_template.sh` and rename it as `parameters.sh`.
+- Edit the file `parameters.sh` and modify the variables according to your needs.
+- Run process: `./run_process.sh PROCESSING_FILE`
+- The following `PROCESSING_FILE` are available:
+  - `prepare_data.sh`: Copy and rename files according to the convention above
+  - `process_data.sh`: Main batch file to process data
+  - `compute_metrics.sh`: Compute qMRI metrics
 
-This pipeline has been tested on SCT v3.1.1:
-https://github.com/neuropoly/spinalcordtoolbox/releases/tag/v3.1.1
+  ## License
+
+  The MIT License (MIT)
+
+  Copyright (c) 2018 Polytechnique Montreal, Université de Montréal
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
