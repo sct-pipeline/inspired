@@ -33,6 +33,11 @@ fi
 # build syntax for process execution
 PATH_PROCESS=`pwd`/$1
 
+# Create results folder
+if [ ! -d ${PATH_RESULTS} ]; then
+  mkdir ${PATH_RESULTS}
+fi
+
 # Loop across subjects
 for subject in ${SUBJECTS[@]}; do
   # Display stuff

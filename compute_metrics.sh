@@ -1,9 +1,12 @@
 #!/bin/bash
 #
-# This script extract metrics.
+# This script extracts metrics.
 #
 # NB: add the flag "-x" after "!/bin/bash" for full verbose of commands.
-# Julien Cohen-Adad 2018-01-30
+# Julien Cohen-Adad
+
+# Exit if user presses CTRL+C (Linux) or CMD+C (OSX)
+trap "echo Caught Keyboard Interrupt within script. Exiting now.; exit" INT
 
 subject=${1}
 
@@ -16,8 +19,8 @@ if [ -d "t2_seg_manual.nii.gz" ]; then
 else
   file_seg="t2_seg.nii.gz"
 fi
-# shape analysis
-sct_process_segmentation -i ${file_seg} -p shape -ofolder ${PATH_RESULTS}"shape_analysis/"${subject}
+shape analysis at the site of lesion
+sct_process_segmentation -i ${file_seg} -p shape -o ${PATH_RESULTS}"/shape_${subject}.csv"
 cd -
 
 # t2s
@@ -37,22 +40,17 @@ else
 fi
 # subtract cord and GM seg to get WM seg
 sct_maths -i ${file_seg} -sub ${file_gmseg} -o wm_seg.nii.gz
-# compute WM CSA
-sct_process_segmentation -i wm_seg.nii.gz -p csa -z 2:7 -ofolder ${PATH_RESULTS}"WM_CSA/" -no-angle 1
-# compute GM CSA
-sct_process_segmentation -i ${file_gmseg} -p csa -z 2:7 -ofolder ${PATH_RESULTS}"GM_CSA/" -no-angle 1
+# compute WM and GM CSA
+sct_process_segmentation -i wm_seg.nii.gz -p csa -z 2:7 -no-angle 1 -o ${PATH_RESULTS}/"csa_wm.csv" -append 1
+sct_process_segmentation -i ${file_gmseg} -p csa -z 2:7 -no-angle 1 -o ${PATH_RESULTS}/"csa_gm.csv" -append 1
 cd -
 
 # dwi
 # ===========================================================================================
 cd dwi
-mkdir ${PATH_RESULTS}diffusion
-# compute FA in WM
-sct_extract_metric -i dti_FA.nii.gz -l 51 -method map -o ${PATH_RESULTS}diffusion/FA_in_WM.xls
-# compute FA in dorsal columns
-sct_extract_metric -i dti_FA.nii.gz -l 53 -method map -o ${PATH_RESULTS}diffusion/FA_in_DC.xls
-# compute FA in lateral funiculi
-sct_extract_metric -i dti_FA.nii.gz -l 54 -method map -o ${PATH_RESULTS}diffusion/FA_in_LF.xls
-# compute FA in ventral funiculi
-sct_extract_metric -i dti_FA.nii.gz -l 55 -method map -o ${PATH_RESULTS}diffusion/FA_in_VF.xls
+# compute DTI metrics between C1-C4
+sct_extract_metric -i dti_FA.nii.gz -l 51 -vert 1:4 -method map -o ${PATH_RESULTS}/dwi_FA_in_WM.csv -append 1
+sct_extract_metric -i dti_FA.nii.gz -l 53 -vert 1:4 -method map -o ${PATH_RESULTS}/dwi_FA_in_DC.csv -append 1
+sct_extract_metric -i dti_FA.nii.gz -l 54 -vert 1:4 -method map -o ${PATH_RESULTS}/dwi_FA_in_LF.csv -append 1
+sct_extract_metric -i dti_FA.nii.gz -l 55 -vert 1:4 -method map -o ${PATH_RESULTS}/dwi_FA_in_VF.csv -append 1
 cd -
