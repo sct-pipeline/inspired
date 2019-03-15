@@ -19,7 +19,7 @@ if [ -d "t2_seg_manual.nii.gz" ]; then
 else
   file_seg="t2_seg.nii.gz"
 fi
-shape analysis at the site of lesion
+# shape analysis
 sct_process_segmentation -i ${file_seg} -p shape -o ${PATH_RESULTS}"/shape_${subject}.csv"
 cd -
 
