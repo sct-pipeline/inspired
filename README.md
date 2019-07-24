@@ -39,11 +39,11 @@ This pipeline has been tested on [SCT v4.0.0_beta.1](https://github.com/neuropol
   - `process_data.sh`: Main batch file to process data
   - `compute_metrics.sh`: Compute qMRI metrics
 
-  ## License
+## License
 
-  The MIT License (MIT)
+The MIT License (MIT)
 
-  Copyright (c) 2018 Polytechnique Montreal, Université de Montréal
+Copyright (c) 2018 Polytechnique Montreal, Université de Montréal
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
