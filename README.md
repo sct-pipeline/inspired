@@ -41,6 +41,13 @@ This pipeline has been tested on [SCT v5.0.1](https://github.com/neuropoly/spina
   sct_run_batch -path-data <PATH_DATASET> -script <PATH_TO_INSPIRED>/process_data.sh -subject-prefix "" -path-output my_results -job -1
   ~~~
 
+- Once the pipeline has ran once, inspect the HTML quality control report:
+  ~~~
+  open my_results/qc/index.html
+  ~~~
+
+- TODO: add QC manual correction procedure
+
 
 ## License
 
