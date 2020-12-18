@@ -5,7 +5,7 @@ Spinal cord analysis scripts based on SCT for the INSPIRED project.
 ## File structure
 
 ~~~
-data
+PATH_DATASET
   |- 001/
   |- 002/
   |- 003/
@@ -23,21 +23,23 @@ data
               |- dwi/  # processing of dwi
 ~~~
 
+
 ## Dependencies
 
-This pipeline has been tested on [SCT v4.0.0_beta.1](https://github.com/neuropoly/spinalcordtoolbox/releases)
+This pipeline has been tested on [SCT v5.0.1](https://github.com/neuropoly/spinalcordtoolbox/releases).
+
 
 ## How to run
 
-- Download (or `git clone`) this repository.
-- Go to this repository: `cd inspired`
-- Copy the file `parameters_template.sh` and rename it as `parameters.sh`.
-- Edit the file `parameters.sh` and modify the variables according to your needs.
-- Run process: `./run_process.sh PROCESSING_FILE`
-- The following `PROCESSING_FILE` are available:
-  - `prepare_data.sh`: Copy and rename files according to the convention above
-  - `process_data.sh`: Main batch file to process data
-  - `compute_metrics.sh`: Compute qMRI metrics
+- Download (or `git clone`) this repository:
+  ~~~
+
+  ~~~
+- Run the script:
+  ~~~
+  sct_run_batch -path-data <PATH_DATASET> -script <PATH_TO_INSPIRED>/process_data.sh -subject-prefix "" -path-output my_results -job -1
+  ~~~
+
 
 ## License
 
