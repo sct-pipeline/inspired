@@ -33,8 +33,9 @@ This pipeline has been tested on [SCT v5.0.1](https://github.com/neuropoly/spina
 
 - Download (or `git clone`) this repository:
   ~~~
-
+  git clone git@github.com:sct-pipeline/inspired.git
   ~~~
+
 - Run the script:
   ~~~
   sct_run_batch -path-data <PATH_DATASET> -script <PATH_TO_INSPIRED>/process_data.sh -subject-prefix "" -path-output my_results -job -1
