@@ -9,18 +9,18 @@ data
   |- 001/
   |- 002/
   |- 003/
-      |- bl/
-	  |- brain/
-    	  |- cord/
-      	      |- dwi.nii.gz + bvals/bvecs
-      	      |- t1_sag.nii.gz
-      	      |- t2_sag.nii.gz
-      	      |- t2_tra.nii.gz
-      	      |- pd_medic.nii.gz
-      	      |- processing_sct/
-      	          |- t2/  # processing of t2_tra
-      	          |- t2s/  # processing of pd_medic
-      	          |- dwi/  # processing of dwi
+     |- bl/
+        |- brain/
+        |- cord/
+           |- dwi.nii.gz + bvals/bvecs
+           |- t1_sag.nii.gz
+           |- t2_sag.nii.gz
+           |- t2_tra.nii.gz
+           |- pd_medic.nii.gz
+           |- processing_sct/
+              |- t2/  # processing of t2_tra
+              |- t2s/  # processing of pd_medic
+              |- dwi/  # processing of dwi
 ~~~
 
 ## Dependencies
