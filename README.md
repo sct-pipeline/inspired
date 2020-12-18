@@ -15,8 +15,8 @@ data
            |- dwi.nii.gz + bvals/bvecs
            |- t1_sag.nii.gz
            |- t2_sag.nii.gz
-           |- t2_tra.nii.gz
-           |- pd_medic.nii.gz
+           |- t2_tra.nii.gz  # Always centered at the compression site
+           |- pd_medic.nii.gz  # Always centered at C2-C3
            |- processing_sct/
               |- t2/  # processing of t2_tra
               |- t2s/  # processing of pd_medic

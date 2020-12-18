@@ -122,10 +122,7 @@ rsync -avzh $PATH_DATA/$SUBJECT .
 cd ${SUBJECT}/bl/cord
 mkdir -p processing_sct
 cd processing_sct
-cp ../t2_tra.nii.gz .
-cp ../t2_sag.nii.gz .
-cp ../pd_medic.nii.gz .
-cp ../dwi.nii.gz .
+cp ../*.nii.gz .
 
 # T2 sag
 # ------------------------------------------------------------------------------
@@ -156,7 +153,7 @@ file_t2_ax_seg=$FILESEG
 # Bring vertebral levels into the native image space
 sct_register_multimodal -i label/template/PAM50_levels.nii.gz -d ${file_t2_ax}.nii.gz -x nn -identity 1 -o ${file_t2_ax}_vertlevels.nii.gz
 # Compute average cord CSA between C2 and C3
-sct_process_segmentation -i ${file_t2_ax_seg}.nii.gz -vert 2:3 -vertfile ${file_t2_ax}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_T2.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+sct_process_segmentation -i ${file_t2_ax_seg}.nii.gz -perslice 1 -vertfile ${file_t2_ax}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_T2.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
 
 # T2s ax
 # ------------------------------------------------------------------------------
@@ -168,10 +165,10 @@ file_t2s_seg=$FILESEG
 sct_register_multimodal -i label/template/PAM50_levels.nii.gz -d ${file_t2s}.nii.gz -x nn -identity 1 -o ${file_t2s}_vertlevels.nii.gz
 # Segment gray matter (only if it does not exist)
 segment_gm_if_does_not_exist $file_t2s "t2s"
-file_t2s_seg=$FILESEG
+file_t2s_gmseg=$FILESEG
 # Compute cord and gray matter CSA between C2 and C3 levels
 sct_process_segmentation -i ${file_t2s_seg}.nii.gz -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_MEDIC.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
-sct_process_segmentation -i ${file_t2s_seg}.nii.gz -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-GM_MEDIC.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+sct_process_segmentation -i ${file_t2s_gmseg}.nii.gz -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-GM_MEDIC.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
 
 
 #
