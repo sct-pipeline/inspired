@@ -163,8 +163,10 @@ sct_register_multimodal -i label/template/PAM50_levels.nii.gz -d ${file_t2s}.nii
 segment_gm_if_does_not_exist $file_t2s "t2s"
 file_t2s_gmseg=$FILESEG
 # Compute cord and gray matter CSA between C2 and C3 levels
-sct_process_segmentation -i ${file_t2s_seg}.nii.gz -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_MEDIC.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
-sct_process_segmentation -i ${file_t2s_gmseg}.nii.gz -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-GM_MEDIC.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+# NB: Here we set -no-angle 1 because we do not want angle correction: it is too
+# unstable with GM seg, and t2s data were acquired orthogonal to the cord anyways.
+sct_process_segmentation -i ${file_t2s_seg}.nii.gz -angle-corr 0 -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_MEDIC.csv -append 1
+sct_process_segmentation -i ${file_t2s_gmseg}.nii.gz -angle-corr 0 -vert 2:3 -vertfile ${file_t2s}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-GM_MEDIC.csv -append 1
 
 
 #
