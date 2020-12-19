@@ -42,7 +42,7 @@ label_if_does_not_exist(){
   local file_seg="$2"
   # Update global variable with segmentation file name
   FILELABEL="${file}_labels"
-  FILELABELMANUAL="${PATH_DATA}/${SUBJECT}/anat/${FILELABEL}-manual.nii.gz"
+  FILELABELMANUAL="${FILELABEL}-manual.nii.gz"
   echo "Looking for manual label: $FILELABELMANUAL"
   if [[ -e $FILELABELMANUAL ]]; then
     echo "Found! Using manual labels."
@@ -51,8 +51,8 @@ label_if_does_not_exist(){
     echo "Not found. Proceeding with automatic labeling."
     # Generate labeled segmentation
     sct_label_vertebrae -i ${file}.nii.gz -s ${file_seg}.nii.gz -c t2
-    # Create label at the C2-C3 intervertebral disc
-    sct_label_utils -i ${file_seg}_labeled_discs.nii.gz -keep 3 -o ${FILELABEL}.nii.gz
+    # Create label at the C2-C3 and C6-C7 intervertebral discs
+    sct_label_utils -i ${file_seg}_labeled_discs.nii.gz -keep 3,7 -o ${FILELABEL}.nii.gz
   fi
 }
 
@@ -69,7 +69,7 @@ segment_if_does_not_exist(){
   fi
   # Update global variable with segmentation file name
   FILESEG="${file}_seg"
-  FILESEGMANUAL="${PATH_DATA}/${SUBJECT}/${folder_contrast}/${FILESEG}-manual.nii.gz"
+  FILESEGMANUAL="${FILESEG}-manual.nii.gz"
   echo
   echo "Looking for manual segmentation: $FILESEGMANUAL"
   if [[ -e $FILESEGMANUAL ]]; then
@@ -90,7 +90,7 @@ segment_gm_if_does_not_exist(){
   local contrast="$2"
   # Update global variable with segmentation file name
   FILESEG="${file}_gmseg"
-  FILESEGMANUAL="${PATH_DATA}/${SUBJECT}/anat/${FILESEG}-manual.nii.gz"
+  FILESEGMANUAL="${FILESEG}-manual.nii.gz"
   echo "Looking for manual segmentation: $FILESEGMANUAL"
   if [[ -e $FILESEGMANUAL ]]; then
     echo "Found! Using manual segmentation."
