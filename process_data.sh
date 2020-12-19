@@ -5,8 +5,7 @@
 # Usage:
 #   ./process_data.sh <SUBJECT>
 #
-# Manual segmentations or labels should be located under:
-# PATH_DATA/derivatives/labels/SUBJECT/<CONTRAST>/
+# Manual segmentations or labels should be located were the images are
 #
 # Authors: Julien Cohen-Adad
 
@@ -43,8 +42,7 @@ label_if_does_not_exist(){
   local file_seg="$2"
   # Update global variable with segmentation file name
   FILELABEL="${file}_labels"
-  # TODO: update path to derivatives
-  FILELABELMANUAL="${PATH_DATA}/derivatives/labels/${SUBJECT}/anat/${FILELABEL}-manual.nii.gz"
+  FILELABELMANUAL="${PATH_DATA}/${SUBJECT}/anat/${FILELABEL}-manual.nii.gz"
   echo "Looking for manual label: $FILELABELMANUAL"
   if [[ -e $FILELABELMANUAL ]]; then
     echo "Found! Using manual labels."
@@ -71,8 +69,7 @@ segment_if_does_not_exist(){
   fi
   # Update global variable with segmentation file name
   FILESEG="${file}_seg"
-  # TODO: update path to derivatives
-  FILESEGMANUAL="${PATH_DATA}/derivatives/labels/${SUBJECT}/${folder_contrast}/${FILESEG}-manual.nii.gz"
+  FILESEGMANUAL="${PATH_DATA}/${SUBJECT}/${folder_contrast}/${FILESEG}-manual.nii.gz"
   echo
   echo "Looking for manual segmentation: $FILESEGMANUAL"
   if [[ -e $FILESEGMANUAL ]]; then
@@ -93,8 +90,7 @@ segment_gm_if_does_not_exist(){
   local contrast="$2"
   # Update global variable with segmentation file name
   FILESEG="${file}_gmseg"
-  # TODO: update path to derivatives
-  FILESEGMANUAL="${PATH_DATA}/derivatives/labels/${SUBJECT}/anat/${FILESEG}-manual.nii.gz"
+  FILESEGMANUAL="${PATH_DATA}/${SUBJECT}/anat/${FILESEG}-manual.nii.gz"
   echo "Looking for manual segmentation: $FILESEGMANUAL"
   if [[ -e $FILESEGMANUAL ]]; then
     echo "Found! Using manual segmentation."
