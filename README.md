@@ -53,25 +53,40 @@ This pipeline has been tested on [SCT v5.0.1](https://github.com/neuropoly/spina
 
 ### Disc labeling
 
-In the QC report, in the search box, enter "label_vert". This will displays only
+In the QC report, in the search box, enter "label_vert". This will only list
 processes related to `sct_label_vertebrae`.
 
-If you spot an issue with a subject, run the following command:
+If you spot an issue with a subject (e.g., mismatch of vertebral labeling),
+run the following command:
 ~~~
 sct_label_utils -i <PATH_OUTPUT>/data_processed/<SUBJECT>bl/cord/processing_sct/t2_sag_RPI_r.nii.gz -create-viewer 3,7 -m "Click at the posterior tip of intervertebral discs C2/C3 and C6/C7." -o <PATH_DATA>/<SUBJECT>bl/cord/t2_sag_RPI_r_labels-manual.nii.gz
 ~~~
 
-The command above will create the manual labels directly in the source dataset
+Run the command above for every subject where you spot a problem.
+
+> ℹ️ &nbsp; The command above will create the manual labels directly in the source dataset
 indicated by path `<PATH_DATA>`, so you don't need to further copy the created
 label.
 
 ### Cord segmentation
 
-> ⚠️ All manual corrections need to be copied in the original dataset, so they
-can be used when re-running the pipeline.
+In the QC report, in the search box, enter "deepseg_sc". This will only list
+processes related to `sct_deepseg_sc`.
 
- open the file `t2_sag.nii.gz` with an
-image editor (e.g., FSLeyes, ITKsnap)
+Then, only look for files named `t2_tra.nii.gz` and `pd_medic.nii.gz`. These are the one you need to correct.
+
+If you spot an issue with a subject (e.g., segmentation leaking, or missing a few pixels), open the problematic image file with an image editor (e.g., FSLeyes, ITKsnap). Then, overlay the generated segmentation on top of the image. The segmentation file is either named `t2_tra_seg.nii.gz` or `pd_medic_seg.nii.gz`. Manually fix the segmentation, then save it with the suffix "-manual", e.g. `t2_tra_seg-manual.nii.gz`.
+
+> ⚠️ &nbsp; All manual corrections _must_ be saved within the original dataset <PATH_DATA>, so they can be used when re-running the pipeline.
+
+### Gray matter segmentation
+
+In the QC report, in the search box, enter "deepseg_gm". This will only list
+processes related to `sct_deepseg_gm`.
+
+If you spot an issue with a subject (e.g., segmentation leaking, or missing a few pixels), open the problematic image file with an image editor (e.g., FSLeyes, ITKsnap). Then, overlay the generated segmentation on top of the image. The segmentation file is named `pd_medic_gmseg.nii.gz`. Manually fix the segmentation, then save it with the suffix "-manual", e.g. `pd_medic_gmseg-manual.nii.gz`.
+
+> ⚠️ &nbsp; All manual corrections _must_ be saved within the original dataset <PATH_DATA>, so they can be used when re-running the pipeline.
 
 
 ## License
