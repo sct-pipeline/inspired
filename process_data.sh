@@ -135,8 +135,11 @@ label_if_does_not_exist ${file_t2} ${file_t2_seg}
 file_label=$FILELABEL
 # Register to PAM50 template
 sct_register_to_template -i ${file_t2}.nii.gz -s ${file_t2_seg}.nii.gz -ldisc ${file_label}.nii.gz -c t2 -param step=1,type=seg,algo=centermass:step=2,type=seg,algo=syn,slicewise=1,smooth=0,iter=3 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+# Rename warping fields for clarity
+mv warp_template2anat.nii.gz warp_template2t2sag.nii.gz
+mv warp_anat2template.nii.gz warp_t2sag2template.nii.gz
 # Warp template without the white matter atlas (we don't need it at this point)
-sct_warp_template -d ${file_t2}.nii.gz -w warp_template2anat.nii.gz -a 0
+sct_warp_template -d ${file_t2}.nii.gz -w warp_template2t2sag.nii.gz -a 0
 # Generate QC report to assess vertebral labeling
 sct_qc -i ${file_t2}.nii.gz -s label/template/PAM50_levels.nii.gz -p sct_label_vertebrae -qc ${PATH_QC} -qc-subject ${SUBJECT}
 
@@ -170,7 +173,38 @@ sct_process_segmentation -i ${file_t2s_gmseg}.nii.gz -angle-corr 0 -vert 2:3 -ve
 
 # DWI
 # ------------------------------------------------------------------------------
-# TODO
+file_dwi="dwi"
+# Separate b=0 and DW images
+sct_dmri_separate_b0_and_dwi -i ${file_dwi}.nii.gz -bvec ${file_bvec}
+# Get centerline
+sct_get_centerline -i ${file_dwi}_dwi_mean.nii.gz -c dwi -qc ${PATH_QC} -qc-subject ${SUBJECT}
+# Create mask to help motion correction and for faster processing
+sct_create_mask -i ${file_dwi}_dwi_mean.nii.gz -p centerline,${file_dwi}_dwi_mean_centerline.nii.gz -size 30mm
+# Motion correction
+sct_dmri_moco -i ${file_dwi}.nii.gz -bvec ${file_dwi}.bvec -m mask_${file_dwi}_dwi_mean.nii.gz -x spline
+file_dwi=${file_dwi}_moco
+file_dwi_mean=${file_dwi}_dwi_mean
+# Segment spinal cord (only if it does not exist)
+segment_if_does_not_exist ${file_dwi_mean} "dwi"
+file_dwi_seg=$FILESEG
+# create label at C2-C3 disc, knowing that the FOV is centered at C2-C3 disc
+sct_label_utils -i ${file_dwi_seg} -create-seg -1,3 -o labels_dwi.nii.gz
+# Register to template
+sct_register_to_template -i ${file_dwi_mean}.nii.gz -s ${file_dwi_seg}.nii.gz -ldisc labels_dwi.nii.gz -c t1 -ref subject -param step=1,type=seg,algo=centermassrot:step=2,type=seg,algo=bsplinesyn,metric=MeanSquares,smooth=0,iter=3,gradStep=1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+# Rename warping fields for clarity
+mv warp_template2anat.nii.gz warp_template2dwi.nii.gz
+mv warp_anat2template.nii.gz warp_dwi2template.nii.gz
+# Warp template
+sct_warp_template -d ${file_dwi_mean}.nii.gz -w warp_template2dwi.nii.gz -ofolder label_dwi -qc ${PATH_QC} -qc-subject ${SUBJECT}
+# Create mask around the spinal cord (for faster computing)
+sct_maths -i ${file_dwi_seg}.nii.gz -dilate 1 -shape ball -o ${file_dwi_seg}_dil.nii.gz
+# Compute DTI
+sct_dmri_compute_dti -i ${file_dwi}.nii.gz -bvec ${file_bvec} -bval ${file_bval} -method standard -m ${file_dwi_seg}_dil.nii.gz
+# Compute FA, MD and RD in WM between C2 and C3 vertebral levels
+sct_extract_metric -i dti_FA.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -o ${PATH_RESULTS}/DWI_FA.csv -append 1
+sct_extract_metric -i dti_MD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -o ${PATH_RESULTS}/DWI_MD.csv -append 1
+sct_extract_metric -i dti_RD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -o ${PATH_RESULTS}/DWI_RD.csv -append 1
+
 
 # Verify presence of output files and write log file if error
 # ------------------------------------------------------------------------------

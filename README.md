@@ -12,15 +12,12 @@ PATH_DATA
      |- bl/
         |- brain/
         |- cord/
-           |- dwi.nii.gz + bvals/bvecs
+           |- dwi.nii.gz + bvals/bvecs  # Centered at C2-C3
            |- t1_sag.nii.gz
            |- t2_sag.nii.gz
-           |- t2_tra.nii.gz  # Always centered at the compression site
-           |- pd_medic.nii.gz  # Always centered at C2-C3
-           |- processing_sct/
-              |- t2/  # processing of t2_tra
-              |- t2s/  # processing of pd_medic
-              |- dwi/  # processing of dwi
+           |- t2_tra.nii.gz  # Centered at the compression site
+           |- pd_medic.nii.gz  # Centered at C2-C3
+           |- processing_sct/  # Processed data
 ~~~
 
 
@@ -81,7 +78,10 @@ label.
 In the QC report, in the search box, enter "deepseg_sc". This will only list
 processes related to `sct_deepseg_sc`.
 
-Then, only look for files named `t2_tra.nii.gz` and `pd_medic.nii.gz`. These are the one you need to correct.
+Then, look for files named:
+- `t2_tra.nii.gz`
+- `pd_medic.nii.gz`
+- `dwi_dwi_mean.nii.gz`
 
 If you spot an issue with a subject (e.g., segmentation leaking, or missing a few pixels), open the problematic image file with an image editor (e.g., FSLeyes, ITKsnap). Then, overlay the generated segmentation on top of the image. The segmentation file is either named `t2_tra_seg.nii.gz` or `pd_medic_seg.nii.gz`. Manually fix the segmentation, then save it with the suffix "-manual", e.g. `t2_tra_seg-manual.nii.gz`.
 
