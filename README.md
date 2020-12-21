@@ -29,7 +29,15 @@ PATH_DATA
 This pipeline has been tested on [SCT v5.0.1](https://github.com/neuropoly/spinalcordtoolbox/releases).
 
 
-## How to run
+## How to run (snakemake pipeline)
+
+The INSPIRED pipeline is managed by `snakemake`, via [this repository](https://github.com/inspiredstudy/inspiredsnakemake).
+In particular, the call to SCT's script is [here](https://github.com/inspiredstudy/inspiredsnakemake/blob/master/template/default/Snakefile.j2#L420).
+If you prefer to run the pipeline independently, please start from the section
+below.
+
+
+## How to run (standalone)
 
 - Download (or `git clone`) this repository:
   ~~~
