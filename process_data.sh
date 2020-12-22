@@ -119,6 +119,8 @@ cd ${SUBJECT}/bl/cord
 mkdir -p processing_sct
 cd processing_sct
 cp ../*.nii.gz .
+cp ../*.bvec .
+cp ../*.bval .
 
 # T2 sag
 # ------------------------------------------------------------------------------
@@ -157,6 +159,17 @@ sct_process_segmentation -i ${file_t2_ax_seg}.nii.gz -perslice 1 -vertfile ${fil
 # T2s ax
 # ------------------------------------------------------------------------------
 file_t2s="pd_medic"
+# extract first volume
+sct_image -i ${file_t2s}.nii.gz -split t
+# detect spinal cord
+sct_get_centerline -i ${file_t2s}_T0000.nii.gz -c t2s
+# create VOI centered around spinal cord
+sct_create_mask -i ${file_t2s}_T0000.nii.gz -p centerline,${file_t2s}_T0000_centerline.nii.gz -size 55 -f cylinder -o mask_t2s.nii.gz
+# motion correction across volumes (using VOI for more accuracy)
+sct_fmri_moco -i ${file_t2s}.nii.gz -g 1 -m mask_t2s.nii.gz -x spline
+# average all motion-corrected volumes
+sct_maths -i ${file_t2s}_moco.nii.gz -mean t -o ${file_t2s}_moco_mean.nii.gz
+file_t2s=${file_t2s}_moco_mean
 # Segment spinal cord (only if it does not exist)
 segment_if_does_not_exist $file_t2s "t2s"
 file_t2s_seg=$FILESEG
@@ -174,6 +187,8 @@ sct_process_segmentation -i ${file_t2s_gmseg}.nii.gz -angle-corr 0 -vert 2:3 -ve
 # DWI
 # ------------------------------------------------------------------------------
 file_dwi="dwi"
+file_bvec="dwi.bvec"
+file_bval="dwi.bval"
 # Separate b=0 and DW images
 sct_dmri_separate_b0_and_dwi -i ${file_dwi}.nii.gz -bvec ${file_bvec}
 # Get centerline
@@ -188,7 +203,7 @@ file_dwi_mean=${file_dwi}_dwi_mean
 segment_if_does_not_exist ${file_dwi_mean} "dwi"
 file_dwi_seg=$FILESEG
 # create label at C2-C3 disc, knowing that the FOV is centered at C2-C3 disc
-sct_label_utils -i ${file_dwi_seg} -create-seg -1,3 -o labels_dwi.nii.gz
+sct_label_utils -i ${file_dwi_seg}.nii.gz -create-seg -1,3 -o labels_dwi.nii.gz
 # Register to template
 sct_register_to_template -i ${file_dwi_mean}.nii.gz -s ${file_dwi_seg}.nii.gz -ldisc labels_dwi.nii.gz -c t1 -ref subject -param step=1,type=seg,algo=centermassrot:step=2,type=seg,algo=bsplinesyn,metric=MeanSquares,smooth=0,iter=3,gradStep=1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
 # Rename warping fields for clarity
