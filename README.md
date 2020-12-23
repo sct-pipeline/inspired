@@ -80,7 +80,7 @@ processes related to `sct_deepseg_sc`.
 
 Then, look for files named:
 - `t2_tra.nii.gz`
-- `pd_medic.nii.gz`
+- `pd_medic_moco_mean.nii.gz`
 - `dwi_dwi_mean.nii.gz`
 
 If you spot an issue with a subject (e.g., segmentation leaking, or missing a few pixels), open the problematic image file with an image editor (e.g., FSLeyes, ITKsnap). Then, overlay the generated segmentation on top of the image. The segmentation file is either named `t2_tra_seg.nii.gz` or `pd_medic_seg.nii.gz`. Manually fix the segmentation, then save it with the suffix "-manual", e.g. `t2_tra_seg-manual.nii.gz`.
