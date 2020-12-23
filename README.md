@@ -17,7 +17,7 @@ PATH_DATA
            |- t2_sag.nii.gz
            |- t2_tra.nii.gz  # Centered at the compression site
            |- pd_medic.nii.gz  # Centered at C2-C3
-           |- processing_sct/  # Processed data
+           |- sct_processing/  # Processed data
 ~~~
 
 
