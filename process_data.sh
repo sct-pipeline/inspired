@@ -154,7 +154,8 @@ file_t2_ax_seg=$FILESEG
 # Bring vertebral levels into the native image space
 sct_register_multimodal -i label/template/PAM50_levels.nii.gz -d ${file_t2_ax}.nii.gz -x nn -identity 1 -o ${file_t2_ax}_vertlevels.nii.gz
 # Compute average cord CSA per slice
-sct_process_segmentation -i ${file_t2_ax_seg}.nii.gz -perslice 1 -vertfile ${file_t2_ax}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_T2.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+sct_process_segmentation -i ${file_t2_ax_seg}.nii.gz -perslice 1 -vertfile ${file_t2_ax}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_T2_sub${SUBJECT}.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
+sct_process_segmentation -i ${file_t2_ax_seg}.nii.gz -perslice 1 -vertfile ${file_t2_ax}_vertlevels.nii.gz -o ${PATH_RESULTS}/csa-SC_T2_allSubjects.csv -append 1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
 
 # T2s ax
 # ------------------------------------------------------------------------------
@@ -204,9 +205,10 @@ segment_if_does_not_exist ${file_dwi_mean} "dwi"
 file_dwi_seg=$FILESEG
 # Bring vertebral levels into the native image space
 sct_register_multimodal -i label/template/PAM50_levels.nii.gz -d ${file_t2s}.nii.gz -x nn -identity 1 -o ${file_dwi_mean}_vertlevels.nii.gz
-# create label at C2-C3 disc, knowing that the FOV is centered at C2-C3 disc
-sct_label_utils -i ${file_dwi_mean}_vertlevels.nii.gz -vert-body 3,4 -o labels_dwi.nii.gz
-# TODO: when it works again, we should use -create-seg -1,3. See
+# Create labels using the vertebral labeling from the T2 scan
+sct_label_utils -i ${file_dwi_mean}_vertlevels.nii.gz -vert-body 2,3 -o labels_dwi.nii.gz
+# TODO: create label at C2-C3 disc, knowing that the FOV is centered at C2-C3 disc
+# TODO: when it works again, we should use -create-seg -1,3.
 # Register to template
 sct_register_to_template -i ${file_dwi_mean}.nii.gz -s ${file_dwi_seg}.nii.gz -l labels_dwi.nii.gz -c t1 -ref subject -param step=1,type=seg,algo=centermassrot:step=2,type=seg,algo=bsplinesyn,metric=MeanSquares,smooth=0,iter=3,gradStep=1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
 # Rename warping fields for clarity
@@ -219,10 +221,15 @@ sct_maths -i ${file_dwi_seg}.nii.gz -dilate 1 -shape ball -o ${file_dwi_seg}_dil
 # Compute DTI
 sct_dmri_compute_dti -i ${file_dwi}.nii.gz -bvec ${file_bvec} -bval ${file_bval} -method standard -m ${file_dwi_seg}_dil.nii.gz
 # Compute FA, MD and RD in WM between C2 and C3 vertebral levels
-sct_extract_metric -i dti_FA.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -o ${PATH_RESULTS}/DWI_FA.csv -append 1
-sct_extract_metric -i dti_MD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -o ${PATH_RESULTS}/DWI_MD.csv -append 1
-sct_extract_metric -i dti_RD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -o ${PATH_RESULTS}/DWI_RD.csv -append 1
-
+sct_extract_metric -i dti_FA.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -vertfile label_dwi/template/PAM50_levels.nii.gz -o ${PATH_RESULTS}/DWI_FA.csv -append 1
+sct_extract_metric -i dti_MD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -vertfile label_dwi/template/PAM50_levels.nii.gz -o ${PATH_RESULTS}/DWI_MD.csv -append 1
+sct_extract_metric -i dti_RD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -vertfile label_dwi/template/PAM50_levels.nii.gz -o ${PATH_RESULTS}/DWI_RD.csv -append 1
+sct_extract_metric -i dti_AD.nii.gz -f label_dwi/atlas -l 51 -vert 2:3 -vertfile label_dwi/template/PAM50_levels.nii.gz -o ${PATH_RESULTS}/DWI_AD.csv -append 1
+# Apply transformation to bring DTI metrics to PAM50 template
+sct_apply_transfo -i dti_FA.nii.gz -w warp_dwi2template.nii.gz -d ${SCT_DIR}/data/PAM50/template/PAM50_t1.nii.gz -x linear
+sct_apply_transfo -i dti_MD.nii.gz -w warp_dwi2template.nii.gz -d ${SCT_DIR}/data/PAM50/template/PAM50_t1.nii.gz -x linear
+sct_apply_transfo -i dti_RD.nii.gz -w warp_dwi2template.nii.gz -d ${SCT_DIR}/data/PAM50/template/PAM50_t1.nii.gz -x linear
+sct_apply_transfo -i dti_AD.nii.gz -w warp_dwi2template.nii.gz -d ${SCT_DIR}/data/PAM50/template/PAM50_t1.nii.gz -x linear
 
 # Verify presence of output files and write log file if error
 # ------------------------------------------------------------------------------
