@@ -116,8 +116,8 @@ cd $PATH_DATA_PROCESSED
 rsync -avzh $PATH_DATA/$SUBJECT .
 # Organize files under folder (specific to INSPIRED project)
 cd ${SUBJECT}/bl/cord
-mkdir -p processing_sct
-cd processing_sct
+mkdir -p sct_processing
+cd sct_processing
 cp ../*.nii.gz .
 cp ../*.bvec .
 cp ../*.bval .
@@ -206,7 +206,7 @@ file_dwi_seg=$FILESEG
 sct_register_multimodal -i label/template/PAM50_levels.nii.gz -d ${file_t2s}.nii.gz -x nn -identity 1 -o ${file_dwi_mean}_vertlevels.nii.gz
 # create label at C2-C3 disc, knowing that the FOV is centered at C2-C3 disc
 sct_label_utils -i ${file_dwi_mean}_vertlevels.nii.gz -vert-body 3,4 -o labels_dwi.nii.gz
-# TODO: when it works again, we should use -create-seg -1,3. See 
+# TODO: when it works again, we should use -create-seg -1,3. See
 # Register to template
 sct_register_to_template -i ${file_dwi_mean}.nii.gz -s ${file_dwi_seg}.nii.gz -l labels_dwi.nii.gz -c t1 -ref subject -param step=1,type=seg,algo=centermassrot:step=2,type=seg,algo=bsplinesyn,metric=MeanSquares,smooth=0,iter=3,gradStep=1 -qc ${PATH_QC} -qc-subject ${SUBJECT}
 # Rename warping fields for clarity
